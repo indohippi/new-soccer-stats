@@ -1,30 +1,60 @@
 import React, { useState } from 'react';
 
-const PlayerStatsForm = ({ addStats }) => {
-  const [jerseyNumber, setJerseyNumber] = useState('');
-  const [shotType, setShotType] = useState('');
+const PlayerStatsForm = ({ players, onAddAction }) => {
+  const [selectedPlayer, setSelectedPlayer] = useState('');
+  const [actionType, setActionType] = useState('');
+  const [location, setLocation] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addStats({ jerseyNumber, shotType });
-    setJerseyNumber('');
-    setShotType('');
+    if (selectedPlayer && actionType && location) {
+      onAddAction({
+        playerId: selectedPlayer,
+        type: actionType,
+        location: location
+      });
+      // Reset the form fields after submission
+      setSelectedPlayer('');
+      setActionType('');
+      setLocation('');
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input 
-        type="text" 
-        placeholder="Jersey Number" 
-        value={jerseyNumber} 
-        onChange={(e) => setJerseyNumber(e.target.value)} 
-      />
-      <select value={shotType} onChange={(e) => setShotType(e.target.value)}>
-        <option value="onTarget">On Target</option>
-        <option value="offTarget">Off Target</option>
-        <option value="goal">Goal</option>
-      </select>
-      <button type="submit">Add Stats</button>
+      <div>
+        <label>Select Player:</label>
+        <select value={selectedPlayer} onChange={(e) => setSelectedPlayer(e.target.value)}>
+          <option value="">--Select Player--</option>
+          {players.map(player => (
+            <option key={player.id} value={player.id}>
+              {player.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label>Action Type:</label>
+        <select value={actionType} onChange={(e) => setActionType(e.target.value)}>
+          <option value="">--Select Action--</option>
+          <option value="shotTaken">Shot Taken</option>
+          <option value="shotMade">Shot Made</option>
+          <option value="shotMissed">Shot Missed</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Location on Field:</label>
+        <input
+          type="text"
+          placeholder="e.g. Top Left Corner"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+      </div>
+
+      <button type="submit">Add Action</button>
     </form>
   );
 };

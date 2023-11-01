@@ -1,19 +1,10 @@
 import React, { useState } from 'react';
 
-const GameManagement = ({ players }) => {
-  const [activeGame, setActiveGame] = useState(false);
+const GameManagement = ({ players, onStartGame, onEndGame }) => {
   const [selectedPlayers, setSelectedPlayers] = useState([]);
+  const [isGameStarted, setIsGameStarted] = useState(false);
 
-  const startNewGame = () => {
-    setActiveGame(true);
-  };
-
-  const endGame = () => {
-    setActiveGame(false);
-    setSelectedPlayers([]);
-  };
-
-  const togglePlayerSelection = (playerId) => {
+  const handlePlayerSelect = (playerId) => {
     if (selectedPlayers.includes(playerId)) {
       setSelectedPlayers(prevPlayers => prevPlayers.filter(id => id !== playerId));
     } else {
@@ -21,31 +12,44 @@ const GameManagement = ({ players }) => {
     }
   };
 
+  const handleStartGame = () => {
+    setIsGameStarted(true);
+    onStartGame(selectedPlayers);
+  };
+
+  const handleEndGame = () => {
+    setIsGameStarted(false);
+    onEndGame();
+    setSelectedPlayers([]);
+  };
+
   return (
     <div>
       <h2>Game Management</h2>
-      {!activeGame ? (
-        <button onClick={startNewGame}>Start New Game</button>
-      ) : (
-        <>
-          <button onClick={endGame}>End Game</button>
-          <h3>Select Players for the Game</h3>
-          <ul>
-            {players.map(player => (
-              <li key={player.id}>
-                <label>
-                  <input 
-                    type="checkbox" 
-                    checked={selectedPlayers.includes(player.id)} 
-                    onChange={() => togglePlayerSelection(player.id)}
-                  />
-                  {player.name} - {player.jerseyNumber}
-                </label>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+      <div>
+        <h3>Select Players for the Game</h3>
+        {players.map(player => (
+          <div key={player.id}>
+            <input 
+              type="checkbox" 
+              checked={selectedPlayers.includes(player.id)} 
+              onChange={() => handlePlayerSelect(player.id)} 
+            />
+            {player.name} (Jersey No: {player.jerseyNumber})
+          </div>
+        ))}
+      </div>
+      <div>
+        {!isGameStarted ? (
+          <button onClick={handleStartGame} disabled={selectedPlayers.length === 0}>
+            Start Game
+          </button>
+        ) : (
+          <button onClick={handleEndGame}>
+            End Game
+          </button>
+        )}
+      </div>
     </div>
   );
 };
