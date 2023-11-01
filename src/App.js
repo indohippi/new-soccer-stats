@@ -11,11 +11,28 @@ const App = () => {
   const [currentGame, setCurrentGame] = useState(null);
   const [actions, setActions] = useState([]);
 
+  const onStartGame = (selectedPlayers) => {
+    setCurrentGame({
+      players: selectedPlayers,
+      actions: []
+    });
+  };
+
+  const onEndGame = () => {
+    setCurrentGame(null);
+  };
+
   return (
     <div className="app-container">
       <Header />
       <PlayerManagement players={players} setPlayers={setPlayers} />
-      <GameManagement currentGame={currentGame} setCurrentGame={setCurrentGame} players={players} />
+      <GameManagement 
+        currentGame={currentGame} 
+        setCurrentGame={setCurrentGame} 
+        players={players} 
+        onStartGame={onStartGame}
+        onEndGame={onEndGame}
+      />
       <ActionTracking currentGame={currentGame} actions={actions} setActions={setActions} />
       <StatisticsView players={players} actions={actions} />
       <Footer />
