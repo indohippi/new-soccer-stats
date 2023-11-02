@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 
-const ActionTracking = ({ players = [] }) => { // Default value for players prop
+const ActionTracking = ({ players = [], currentGame, actions, setActions }) => {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [actionType, setActionType] = useState('');
   const [location, setLocation] = useState('');
 
   const handleActionSubmit = (e) => {
     e.preventDefault();
+    if (selectedPlayer && actionType && location) {
+      const newAction = {
+        playerId: selectedPlayer,
+        type: actionType,
+        location: location
+      };
+      setActions([...actions, newAction]);
+    }
     setActionType('');
     setLocation('');
   };
@@ -25,14 +33,28 @@ const ActionTracking = ({ players = [] }) => { // Default value for players prop
           <label>Select Player: </label>
           <select value={selectedPlayer} onChange={(e) => setSelectedPlayer(e.target.value)}>
             <option value="">--Select--</option>
-            {Array.isArray(players) && players.map(player => ( // Check if players is an array
+            {players.map(player => (
               <option key={player.id} value={player.id}>
                 {player.name} - {player.jerseyNumber}
               </option>
             ))}
           </select>
         </div>
-        {/* ... rest of the component ... */}
+        <div>
+          <label>Action Type: </label>
+          <select value={actionType} onChange={(e) => setActionType(e.target.value)}>
+            <option value="">--Select--</option>
+            <option value="made">Shot Made</option>
+            <option value="missed">Shot Missed</option>
+          </select>
+        </div>
+        <div>
+          <label>Location: </label>
+          <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Enter location on the field" />
+        </div>
+        <div>
+          <button type="submit">Add Action</button>
+        </div>
       </form>
     </div>
   );

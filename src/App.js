@@ -33,7 +33,7 @@ const App = () => {
         onStartGame={onStartGame}
         onEndGame={onEndGame}
       />
-      <ActionTracking currentGame={currentGame} actions={actions} setActions={setActions} />
+      <ActionTracking currentGame={currentGame} players={players} actions={actions} setActions={setActions} />
       <StatisticsView players={players} actions={actions} />
       <Footer />
     </div>
