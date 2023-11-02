@@ -4,12 +4,14 @@ import PlayerManagement from './components/PlayerManagement';
 import GameManagement from './components/GameManagement';
 import ActionTracking from './components/ActionTracking';
 import StatisticsView from './components/StatisticsView';
+import SavedGames from './components/SavedGames'; // New import for saved games
 import Footer from './components/Footer';
 
 const App = () => {
   const [players, setPlayers] = useState([]);
   const [currentGame, setCurrentGame] = useState(null);
   const [actions, setActions] = useState([]);
+  const [savedGames, setSavedGames] = useState([]); // New state for saved games
 
   const onStartGame = (selectedPlayers) => {
     setCurrentGame({
@@ -19,6 +21,8 @@ const App = () => {
   };
 
   const onEndGame = () => {
+    // Save the current game to the saved games list
+    setSavedGames(prevGames => [...prevGames, currentGame]);
     setCurrentGame(null);
   };
 
@@ -35,6 +39,7 @@ const App = () => {
       />
       <ActionTracking currentGame={currentGame} players={players} actions={actions} setActions={setActions} />
       <StatisticsView players={players} actions={actions} />
+      <SavedGames games={savedGames} /> {/* New component for displaying saved games */}
       <Footer />
     </div>
   );

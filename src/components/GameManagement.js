@@ -60,5 +60,4 @@ const GameManagement = ({ players, onStartGame, onEndGame }) => {
   );
 };
 
-
 export default GameManagement;
