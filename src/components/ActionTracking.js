@@ -1,21 +1,53 @@
 import React, { useState } from 'react';
+import { useDrag, useDrop, DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+
+const ItemType = {
+  PLAYER: 'player'
+};
+
+const PlayerThumbnail = ({ player, handleDrop }) => {
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: ItemType.PLAYER,
+    item: { id: player.id },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
+
+  return (
+    <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
+      {player.jerseyNumber}
+    </div>
+  );
+};
+
+const ActionArea = ({ type, onDrop }) => {
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: ItemType.PLAYER,
+    drop: (item) => onDrop(type, item.id),
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+  }));
+
+  return (
+    <div ref={drop} style={{ backgroundColor: isOver ? 'lightgray' : 'white' }}>
+      {type}
+    </div>
+  );
+};
 
 const ActionTracking = ({ players = [], currentGame, actions, setActions }) => {
-  const [selectedPlayer, setSelectedPlayer] = useState(null);
-  const [actionType, setActionType] = useState('');
   const [location, setLocation] = useState('');
 
-  const handleActionSubmit = (e) => {
-    e.preventDefault();
-    if (selectedPlayer && actionType && location) {
-      const newAction = {
-        playerId: selectedPlayer,
-        type: actionType,
-        location: location
-      };
-      setActions([...actions, newAction]);
-    }
-    setActionType('');
+  const handleDrop = (type, playerId) => {
+    const newAction = {
+      playerId: playerId,
+      type: type,
+      location: location
+    };
+    setActions([...actions, newAction]);
     setLocation('');
   };
 
@@ -26,37 +58,26 @@ const ActionTracking = ({ players = [], currentGame, actions, setActions }) => {
   };
 
   return (
-    <div style={actionTrackingStyle}>
-      <h2>Action Tracking</h2>
-      <form onSubmit={handleActionSubmit}>
+    <DndProvider backend={HTML5Backend}>
+      <div style={actionTrackingStyle}>
+        <h2>Action Tracking</h2>
         <div>
-          <label>Select Player: </label>
-          <select value={selectedPlayer} onChange={(e) => setSelectedPlayer(e.target.value)}>
-            <option value="">--Select--</option>
-            {players.map(player => (
-              <option key={player.id} value={player.id}>
-                {player.name} - {player.jerseyNumber}
-              </option>
-            ))}
-          </select>
+          {players.map((player) => (
+            <PlayerThumbnail key={player.id} player={player} />
+          ))}
         </div>
         <div>
-          <label>Action Type: </label>
-          <select value={actionType} onChange={(e) => setActionType(e.target.value)}>
-            <option value="">--Select--</option>
-            <option value="made">Shot Made</option>
-            <option value="missed">Shot Missed</option>
-          </select>
+          <ActionArea type="Goal" onDrop={handleDrop} />
+          <ActionArea type="On Target Miss" onDrop={handleDrop} />
+          <ActionArea type="Off Target Miss" onDrop={handleDrop} />
+          <ActionArea type="Assist" onDrop={handleDrop} />
         </div>
         <div>
           <label>Location: </label>
           <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Enter location on the field" />
         </div>
-        <div>
-          <button type="submit">Add Action</button>
-        </div>
-      </form>
-    </div>
+      </div>
+    </DndProvider>
   );
 };
 

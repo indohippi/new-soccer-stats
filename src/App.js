@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend'; // Corrected import
 import Header from './components/Header';
 import PlayerManagement from './components/PlayerManagement';
 import GameManagement from './components/GameManagement';
@@ -27,21 +29,23 @@ const App = () => {
   };
 
   return (
-    <div className="app-container">
-      <Header />
-      <PlayerManagement players={players} setPlayers={setPlayers} />
-      <GameManagement 
-        currentGame={currentGame} 
-        setCurrentGame={setCurrentGame} 
-        players={players} 
-        onStartGame={onStartGame}
-        onEndGame={onEndGame}
-      />
-      <ActionTracking currentGame={currentGame} players={players} actions={actions} setActions={setActions} />
-      <StatisticsView players={players} actions={actions} />
-      <SavedGames games={savedGames} /> {/* New component for displaying saved games */}
-      <Footer />
-    </div>
+    <DndProvider backend={HTML5Backend}> {/* Wrap the entire app with DndProvider */}
+      <div className="app-container">
+        <Header />
+        <PlayerManagement players={players} setPlayers={setPlayers} />
+        <GameManagement 
+          currentGame={currentGame} 
+          setCurrentGame={setCurrentGame} 
+          players={players} 
+          onStartGame={onStartGame}
+          onEndGame={onEndGame}
+        />
+        <ActionTracking currentGame={currentGame} players={players} actions={actions} setActions={setActions} />
+        <StatisticsView players={players} actions={actions} />
+        <SavedGames games={savedGames} /> {/* New component for displaying saved games */}
+        <Footer />
+      </div>
+    </DndProvider>
   );
 };
 
