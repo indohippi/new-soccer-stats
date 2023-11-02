@@ -1,21 +1,21 @@
 import React from 'react';
 
 const StatisticsView = ({ players = [], actions = [] }) => {
-  // Calculate player statistics
-  const getPlayerStats = (playerId) => {
-    const playerActions = actions.filter(action => action.playerId === playerId);
-    const shotsTaken = playerActions.length;
-    const shotsMade = playerActions.filter(action => action.type === 'Goal').length;
-    const shotsMissed = shotsTaken - shotsMade;
-    const assists = playerActions.filter(action => action.type === 'Assist').length;
-
-    return {
-      shotsTaken,
-      shotsMade,
-      shotsMissed,
-      assists
+    // Calculate player statistics
+    const getPlayerStats = (playerId) => {
+      const playerActions = actions.filter(action => action.playerId === playerId);
+      const shotsTaken = playerActions.length;
+      const shotsMade = playerActions.filter(action => action.type === 'Goal').length;
+      const shotsMissed = shotsTaken - shotsMade;
+      const assists = playerActions.filter(action => action.type === 'Assist').length;
+  
+      return {
+        shotsTaken,
+        shotsMade,
+        shotsMissed,
+        assists
+      };
     };
-  };
 
   // Calculate team statistics
   const teamStats = {

@@ -39,17 +39,18 @@ const ActionArea = ({ type, onDrop }) => {
 };
 
 const ActionTracking = ({ players = [], currentGame, actions, setActions }) => {
-  const [location, setLocation] = useState('');
-
-  const handleDrop = (type, playerId) => {
-    const newAction = {
-      playerId: playerId,
-      type: type,
-      location: location
+    const [location, setLocation] = useState('');
+  
+    const handleDrop = (type, playerId) => {
+      const newAction = {
+        playerId: playerId,
+        type: type,
+        location: location
+      };
+      // Accumulate actions
+      setActions(prevActions => [...prevActions, newAction]);
+      setLocation('');
     };
-    setActions([...actions, newAction]);
-    setLocation('');
-  };
 
   const actionTrackingStyle = {
     padding: '20px',
