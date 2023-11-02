@@ -23,8 +23,14 @@ const GameManagement = ({ players, onStartGame, onEndGame }) => {
     setSelectedPlayers([]);
   };
 
+  const gameManagementStyle = {
+    padding: '20px',
+    border: '1px solid #ddd',
+    marginBottom: '20px'
+  };
+
   return (
-    <div>
+    <div style={gameManagementStyle}>
       <h2>Game Management</h2>
       <div>
         <h3>Select Players for the Game</h3>
@@ -53,5 +59,6 @@ const GameManagement = ({ players, onStartGame, onEndGame }) => {
     </div>
   );
 };
+
 
 export default GameManagement;

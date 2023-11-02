@@ -7,6 +7,10 @@ const PlayerManagement = ({ players, setPlayers }) => {
   const [currentEditId, setCurrentEditId] = useState(null);
 
   const addPlayer = () => {
+    if (name.trim() === '' || jerseyNumber.trim() === '') {
+      alert('Please fill in all fields.');
+      return;
+    }
     const newPlayer = {
       id: Date.now(),
       name,

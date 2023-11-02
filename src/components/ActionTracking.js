@@ -11,8 +11,14 @@ const ActionTracking = ({ players = [] }) => { // Default value for players prop
     setLocation('');
   };
 
+  const actionTrackingStyle = {
+    padding: '20px',
+    border: '1px solid #ddd',
+    marginBottom: '20px'
+  };
+
   return (
-    <div>
+    <div style={actionTrackingStyle}>
       <h2>Action Tracking</h2>
       <form onSubmit={handleActionSubmit}>
         <div>
