@@ -3,23 +3,26 @@ import React from 'react';
 const StatisticsView = ({ players = [], actions = [] }) => {
   // Calculate player statistics
   const getPlayerStats = (playerId) => {
-    const playerActions = actions.filter(action => action.playerId === playerId.toString());
+    const playerActions = actions.filter(action => action.playerId === playerId);
     const shotsTaken = playerActions.length;
-    const shotsMade = playerActions.filter(action => action.type === 'made').length;
+    const shotsMade = playerActions.filter(action => action.type === 'Goal').length;
     const shotsMissed = shotsTaken - shotsMade;
+    const assists = playerActions.filter(action => action.type === 'Assist').length;
 
     return {
       shotsTaken,
       shotsMade,
-      shotsMissed
+      shotsMissed,
+      assists
     };
   };
 
   // Calculate team statistics
   const teamStats = {
     totalShotsTaken: actions.length,
-    totalShotsMade: actions.filter(action => action.type === 'made').length,
-    totalShotsMissed: actions.length - actions.filter(action => action.type === 'made').length
+    totalShotsMade: actions.filter(action => action.type === 'Goal').length,
+    totalShotsMissed: actions.length - actions.filter(action => action.type === 'Goal').length,
+    totalAssists: actions.filter(action => action.type === 'Assist').length
   };
 
   return (
@@ -32,6 +35,7 @@ const StatisticsView = ({ players = [], actions = [] }) => {
             <th>Shots Taken</th>
             <th>Shots Made</th>
             <th>Shots Missed</th>
+            <th>Assists</th>
           </tr>
         </thead>
         <tbody>
@@ -43,6 +47,7 @@ const StatisticsView = ({ players = [], actions = [] }) => {
                 <td>{stats.shotsTaken}</td>
                 <td>{stats.shotsMade}</td>
                 <td>{stats.shotsMissed}</td>
+                <td>{stats.assists}</td>
               </tr>
             );
           })}
@@ -56,6 +61,7 @@ const StatisticsView = ({ players = [], actions = [] }) => {
             <th>Total Shots Taken</th>
             <th>Total Shots Made</th>
             <th>Total Shots Missed</th>
+            <th>Total Assists</th>
           </tr>
         </thead>
         <tbody>
@@ -63,6 +69,7 @@ const StatisticsView = ({ players = [], actions = [] }) => {
             <td>{teamStats.totalShotsTaken}</td>
             <td>{teamStats.totalShotsMade}</td>
             <td>{teamStats.totalShotsMissed}</td>
+            <td>{teamStats.totalAssists}</td>
           </tr>
         </tbody>
       </table>
