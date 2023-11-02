@@ -3,7 +3,7 @@ import React from 'react';
 const StatisticsView = ({ players = [], actions = [] }) => {
   // Calculate player statistics
   const getPlayerStats = (playerId) => {
-    const playerActions = actions.filter(action => action.playerId === playerId);
+    const playerActions = actions.filter(action => action.playerId === playerId.toString());
     const shotsTaken = playerActions.length;
     const shotsMade = playerActions.filter(action => action.type === 'made').length;
     const shotsMissed = shotsTaken - shotsMade;
