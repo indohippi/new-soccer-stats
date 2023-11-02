@@ -17,6 +17,7 @@ const App = () => {
 
   const onStartGame = (selectedPlayers) => {
     setCurrentGame({
+      id: Date.now(), // Assign a unique id based on the current timestamp
       players: selectedPlayers,
       actions: []
     });

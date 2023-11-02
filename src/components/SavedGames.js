@@ -16,8 +16,8 @@ const SavedGames = ({ games }) => {
           <h4>Actions:</h4>
           <ul>
             {game.actions.map((action, index) => (
-              <li key={index}>
-                Player {action.playerId} {action.type} from {action.position}
+              <li key={`${action.playerId}-${action.type}-${index}`}>
+                Player {action.playerId} {action.type} from {action.location}
               </li>
             ))}
           </ul>
