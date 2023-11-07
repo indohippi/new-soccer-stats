@@ -56,9 +56,9 @@ const App = () => {
     const newPlayerStatistics = players.map(player => ({
       id: player.id,
       name: player.name,
-      stats: getPlayerStats(player.id, currentGame.actions)
+      stats: getPlayerStats(player.id, currentGame.actions) || { goals: 0, assists: 0 }
     }));
-    const newTeamStatistics = calculateTeamStats(currentGame.actions);
+    const newTeamStatistics = calculateTeamStats(currentGame.actions) || { goals: 0, assists: 0 };
 
     const gameToSave = {
       ...currentGame,

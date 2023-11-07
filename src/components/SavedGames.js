@@ -25,7 +25,7 @@ const SavedGames = ({ games }) => {
               <ul>
                 {game.playerStats.map((stat) => (
                   <li key={stat.id}>
-                    {stat.name}: Goals: {stat.goals}, Assists: {stat.assists}
+                    {stat.name}: Goals: {stat.stats.goals}, Assists: {stat.stats.assists}
                     {/* Display other stats as needed */}
                   </li>
                 ))}
