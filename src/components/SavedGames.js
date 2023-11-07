@@ -1,26 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const SavedGames = ({ games }) => {
+  const [expandedGameId, setExpandedGameId] = useState(null);
+
+  const toggleGameDetails = (gameId) => {
+    setExpandedGameId(expandedGameId === gameId ? null : gameId);
+  };
+
   return (
     <div>
       <h2>Saved Games</h2>
-      {games.map((game, gameIndex) => (
-        <div key={game.id || gameIndex}>
+      {games.map((game) => (
+        <div key={game.id}>
           <h3>Game ID: {game.id}</h3>
-          <h4>Players:</h4>
-          <ul>
-            {game.players.map((player, playerIndex) => (
-              <li key={player.id || playerIndex}>{player.name}</li>
-            ))}
-          </ul>
-          <h4>Actions:</h4>
-          <ul>
-            {game.actions.map((action, actionIndex) => (
-              <li key={`${action.playerId}-${action.type}-${actionIndex}`}>
-                Player {action.playerId} {action.type} from {action.location}
-              </li>
-            ))}
-          </ul>
+          <button onClick={() => toggleGameDetails(game.id)}>
+            {expandedGameId === game.id ? 'Hide Details' : 'Show Details'}
+          </button>
+          {expandedGameId === game.id && (
+            <div>
+              <h4>Player Stats:</h4>
+              {/* Render player stats here */}
+              <h4>Team Stats:</h4>
+              {/* Render team stats here */}
+            </div>
+          )}
         </div>
       ))}
     </div>

@@ -23,7 +23,16 @@ const App = () => {
   };
 
   const onEndGame = () => {
-    setSavedGames(prevGames => [...prevGames, currentGame]);
+    const playerStats = calculatePlayerStats(currentGame);
+    const teamStats = calculateTeamStats(currentGame);
+
+    const gameToSave = {
+      ...currentGame,
+      playerStats,
+      teamStats
+    };
+
+    setSavedGames(prevGames => [...prevGames, gameToSave]);
     setCurrentGame(null);
   };
 
@@ -32,6 +41,20 @@ const App = () => {
       ...prevGame,
       actions: [...prevGame.actions, action]
     }));
+  };
+
+  // Placeholder function for calculating player stats
+  const calculatePlayerStats = (game) => {
+    // Implement the logic to calculate player stats
+    // This should return an object or array with the calculated stats
+    return {}; // Replace with actual stats calculation
+  };
+
+  // Placeholder function for calculating team stats
+  const calculateTeamStats = (game) => {
+    // Implement the logic to calculate team stats
+    // This should return an object with the calculated stats
+    return {}; // Replace with actual stats calculation
   };
 
   return (
