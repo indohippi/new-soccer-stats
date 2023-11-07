@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import jsPDF from 'jspdf';
+import { Button, List, ListItem, ListItemText, Paper, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const SavedGames = ({ games }) => {
   const [expandedGameId, setExpandedGameId] = useState(null);
@@ -27,37 +29,40 @@ const SavedGames = ({ games }) => {
   const safeGames = games || [];
 
   return (
-    <div>
-      <h2>Saved Games</h2>
+    <Paper sx={{ p: 2 }}>
+      <Typography variant="h4" gutterBottom>
+        Saved Games
+      </Typography>
       {safeGames.map((game) => (
-        <div key={game.id}>
-          <h3>Game ID: {game.id}</h3>
-          <button onClick={() => toggleGameDetails(game.id)}>
-            {expandedGameId === game.id ? 'Hide Details' : 'Show Details'}
-          </button>
-          {expandedGameId === game.id && (
-            <div>
-              <h4>Player Stats:</h4>
-              <ul>
-                {game.playerStats.map((stat) => (
-                  <li key={stat.id}>
-                    {stat.name}: Goals: {stat.stats.goals}, Assists: {stat.stats.assists}
-                    {/* Display other stats as needed */}
-                  </li>
-                ))}
-              </ul>
-              <h4>Team Stats:</h4>
-              <div>
-                Total Goals: {game.teamStats.goals}
-                Total Assists: {game.teamStats.assists}
-                {/* Display other team stats as needed */}
-              </div>
-            </div>
-          )}
-          <button onClick={() => exportToPDF(game)}>Export to PDF</button>
-        </div>
+        <Accordion key={game.id} expanded={expandedGameId === game.id} onChange={() => toggleGameDetails(game.id)}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Game ID: {game.id}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography variant="h6">Player Stats:</Typography>
+            <List>
+              {game.playerStats.map((stat) => (
+                <ListItem key={stat.id}>
+                  <ListItemText primary={`${stat.name}: Goals: ${stat.stats.goals}, Assists: ${stat.stats.assists}`} />
+                </ListItem>
+              ))}
+            </List>
+            <Typography variant="h6">Team Stats:</Typography>
+            <List>
+              <ListItem>
+                <ListItemText primary={`Total Goals: ${game.teamStats.goals}`} />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary={`Total Assists: ${game.teamStats.assists}`} />
+              </ListItem>
+            </List>
+          </AccordionDetails>
+          <Button variant="contained" onClick={() => exportToPDF(game)} sx={{ m: 2 }}>
+            Export to PDF
+          </Button>
+        </Accordion>
       ))}
-    </div>
+    </Paper>
   );
 };
 

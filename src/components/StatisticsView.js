@@ -1,21 +1,22 @@
 import React from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
 
 const StatisticsView = ({ players = [], actions = [] }) => {
-    // Calculate player statistics
-    const getPlayerStats = (playerId) => {
-      const playerActions = actions.filter(action => action.playerId === playerId);
-      const shotsTaken = playerActions.length;
-      const shotsMade = playerActions.filter(action => action.type === 'Goal').length;
-      const shotsMissed = shotsTaken - shotsMade;
-      const assists = playerActions.filter(action => action.type === 'Assist').length;
-  
-      return {
-        shotsTaken,
-        shotsMade,
-        shotsMissed,
-        assists
-      };
+  // Calculate player statistics
+  const getPlayerStats = (playerId) => {
+    const playerActions = actions.filter(action => action.playerId === playerId);
+    const shotsTaken = playerActions.length;
+    const shotsMade = playerActions.filter(action => action.type === 'Goal').length;
+    const shotsMissed = shotsTaken - shotsMade;
+    const assists = playerActions.filter(action => action.type === 'Assist').length;
+
+    return {
+      shotsTaken,
+      shotsMade,
+      shotsMissed,
+      assists
     };
+  };
 
   // Calculate team statistics
   const teamStats = {
@@ -26,54 +27,71 @@ const StatisticsView = ({ players = [], actions = [] }) => {
   };
 
   return (
-    <div>
-      <h2>Player Statistics</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Player Name</th>
-            <th>Shots Taken</th>
-            <th>Shots Made</th>
-            <th>Shots Missed</th>
-            <th>Assists</th>
-          </tr>
-        </thead>
-        <tbody>
-          {players.map(player => {
-            const stats = getPlayerStats(player.id);
-            return (
-              <tr key={player.id}>
-                <td>{player.name}</td>
-                <td>{stats.shotsTaken}</td>
-                <td>{stats.shotsMade}</td>
-                <td>{stats.shotsMissed}</td>
-                <td>{stats.assists}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <Paper sx={{ p: 2 }}>
+      <Typography variant="h5" gutterBottom>
+        Player Statistics
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Player Name</TableCell>
+              <TableCell align="right">Shots Taken</TableCell>
+              <TableCell align="right">Shots Made</TableCell>
+              <TableCell align="right">Shots Missed</TableCell>
+              <TableCell align="right">Assists</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {players.map((player) => {
+              const stats = getPlayerStats(player.id);
+              return (
+                <TableRow
+                  key={player.id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {player.name}
+                  </TableCell>
+                  <TableCell align="right">{stats.shotsTaken}</TableCell>
+                  <TableCell align="right">{stats.shotsMade}</TableCell>
+                  <TableCell align="right">{stats.shotsMissed}</TableCell>
+                  <TableCell align="right">{stats.assists}</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-      <h2>Team Statistics</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Total Shots Taken</th>
-            <th>Total Shots Made</th>
-            <th>Total Shots Missed</th>
-            <th>Total Assists</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{teamStats.totalShotsTaken}</td>
-            <td>{teamStats.totalShotsMade}</td>
-            <td>{teamStats.totalShotsMissed}</td>
-            <td>{teamStats.totalAssists}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
+        Team Statistics
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Total Shots Taken</TableCell>
+              <TableCell align="right">Total Shots Made</TableCell>
+              <TableCell align="right">Total Shots Missed</TableCell>
+              <TableCell align="right">Total Assists</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {teamStats.totalShotsTaken}
+              </TableCell>
+              <TableCell align="right">{teamStats.totalShotsMade}</TableCell>
+              <TableCell align="right">{teamStats.totalShotsMissed}</TableCell>
+              <TableCell align="right">{teamStats.totalAssists}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
   );
 };
 

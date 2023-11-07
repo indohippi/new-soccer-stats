@@ -1,20 +1,26 @@
 import React from 'react';
+import { Box, Typography, Container } from '@mui/material';
 
 const Footer = () => {
-  const footerStyle = {
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    textAlign: 'center',
-    padding: '10px 0',
-    position: 'fixed',
-    bottom: '0',
-    width: '100%'
-  };
-
   return (
-    <footer style={footerStyle}>
-      <p>© 2023 Soccer Stats App, Heavenly Wave</p>
-    </footer>
+    <Box
+      component="footer"
+      sx={{
+        bgcolor: 'primary.main',
+        color: 'primary.contrastText',
+        textAlign: 'center',
+        p: 2,
+        position: 'fixed',
+        bottom: 0,
+        width: '100%',
+      }}
+    >
+      <Container maxWidth="sm">
+        <Typography variant="body1">
+          © 2023 Soccer Stats App, Heavenly Wave
+        </Typography>
+      </Container>
+    </Box>
   );
 };
 
