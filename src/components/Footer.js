@@ -13,7 +13,7 @@ const Footer = () => {
 
   return (
     <footer style={footerStyle}>
-      <p>© 2023 Soccer Stats App</p>
+      <p>© 2023 Soccer Stats App, Heavenly Wave</p>
     </footer>
   );
 };

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useDrag, useDrop, DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { Grid, Paper, Typography, Box } from '@mui/material';
 
 const ItemType = {
-  PLAYER: 'player'
+  PLAYER: 'player',
 };
 
-const PlayerThumbnail = ({ player, handleDrop }) => {
+const PlayerThumbnail = ({ player }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemType.PLAYER,
     item: { id: player.id },
@@ -16,9 +17,17 @@ const PlayerThumbnail = ({ player, handleDrop }) => {
   }));
 
   return (
-    <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
+    <Paper
+      ref={drag}
+      sx={{
+        padding: 1,
+        textAlign: 'center',
+        backgroundColor: isDragging ? 'lightgrey' : 'white',
+        cursor: 'move',
+      }}
+    >
       {player.jerseyNumber}
-    </div>
+    </Paper>
   );
 };
 
@@ -32,52 +41,64 @@ const ActionArea = ({ type, onDrop }) => {
   }));
 
   return (
-    <div ref={drop} style={{ backgroundColor: isOver ? 'lightgray' : 'white' }}>
+    <Paper
+      ref={drop}
+      sx={{
+        padding: 1,
+        textAlign: 'center',
+        backgroundColor: isOver ? 'lightgray' : 'white',
+      }}
+    >
       {type}
-    </div>
+    </Paper>
   );
 };
 
-const ActionTracking = ({ players = [], currentGame, handleActionDrop }) => {
+const ActionTracking = ({ players = [], handleActionDrop }) => {
   const [location, setLocation] = useState('');
 
   const handleDrop = (type, playerId) => {
     const newAction = {
       playerId: playerId,
       type: type,
-      location: location
+      location: location,
     };
-    // Pass the new action to the parent component to update the current game state
     handleActionDrop(newAction);
     setLocation('');
   };
 
-  const actionTrackingStyle = {
-    padding: '20px',
-    border: '1px solid #ddd',
-    marginBottom: '20px'
-  };
-
   return (
     <DndProvider backend={HTML5Backend}>
-      <div style={actionTrackingStyle}>
-        <h2>Action Tracking</h2>
-        <div>
+      <Box sx={{ flexGrow: 1, p: 2 }}>
+        <Typography variant="h5" gutterBottom>
+          Action Tracking
+        </Typography>
+        <Grid container spacing={2} justifyContent="center">
           {players.map((player) => (
-            <PlayerThumbnail key={player.id} player={player} handleDrop={handleDrop} />
+            <Grid item key={player.id} xs={2}>
+              <PlayerThumbnail player={player} />
+            </Grid>
           ))}
-        </div>
-        <div>
-          <ActionArea type="Goal" onDrop={handleDrop} />
-          <ActionArea type="On Target Miss" onDrop={handleDrop} />
-          <ActionArea type="Off Target Miss" onDrop={handleDrop} />
-          <ActionArea type="Assist" onDrop={handleDrop} />
-        </div>
-        <div>
-          <label>Location: </label>
-          <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Enter location on the field" />
-        </div>
-      </div>
+        </Grid>
+        <Grid container spacing={2} justifyContent="center">
+          {/* Define action types and map over them for rendering */}
+          {['Goal', 'On Target Miss', 'Off Target Miss', 'Assist'].map((actionType) => (
+            <Grid item key={actionType} xs={3}>
+              <ActionArea type={actionType} onDrop={handleDrop} />
+            </Grid>
+          ))}
+        </Grid>
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="subtitle1">Location:</Typography>
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Enter location on the field"
+            sx={{ width: '100%', padding: '10px', margin: '10px 0' }}
+          />
+        </Box>
+      </Box>
     </DndProvider>
   );
 };
