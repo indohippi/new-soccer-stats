@@ -22,20 +22,6 @@ const App = () => {
     });
   };
 
-  const onEndGame = () => {
-    const playerStats = calculatePlayerStats(currentGame);
-    const teamStats = calculateTeamStats(currentGame);
-
-    const gameToSave = {
-      ...currentGame,
-      playerStats,
-      teamStats
-    };
-
-    setSavedGames(prevGames => [...prevGames, gameToSave]);
-    setCurrentGame(null);
-  };
-
   const handleActionDrop = (action) => {
     setCurrentGame(prevGame => ({
       ...prevGame,
@@ -43,18 +29,45 @@ const App = () => {
     }));
   };
 
-  // Placeholder function for calculating player stats
-  const calculatePlayerStats = (game) => {
-    // Implement the logic to calculate player stats
-    // This should return an object or array with the calculated stats
-    return {}; // Replace with actual stats calculation
+  const getPlayerStats = (playerId, actions) => {
+    const playerActions = actions.filter(action => action.playerId === playerId);
+    const goals = playerActions.filter(action => action.type === 'Goal').length;
+    const assists = playerActions.filter(action => action.type === 'Assist').length;
+    // Add more stats as needed
+    return {
+      goals,
+      assists,
+      // Add more stats as needed
+    };
   };
 
-  // Placeholder function for calculating team stats
-  const calculateTeamStats = (game) => {
-    // Implement the logic to calculate team stats
-    // This should return an object with the calculated stats
-    return {}; // Replace with actual stats calculation
+  const calculateTeamStats = (actions) => {
+    const goals = actions.filter(action => action.type === 'Goal').length;
+    const assists = actions.filter(action => action.type === 'Assist').length;
+    // Add more team stats as needed
+    return {
+      goals,
+      assists,
+      // Add more team stats as needed
+    };
+  };
+
+  const onEndGame = () => {
+    const newPlayerStatistics = players.map(player => ({
+      id: player.id,
+      name: player.name,
+      stats: getPlayerStats(player.id, currentGame.actions)
+    }));
+    const newTeamStatistics = calculateTeamStats(currentGame.actions);
+
+    const gameToSave = {
+      ...currentGame,
+      playerStats: newPlayerStatistics,
+      teamStats: newTeamStatistics
+    };
+
+    setSavedGames(prevGames => [...prevGames, gameToSave]);
+    setCurrentGame(null);
   };
 
   return (

@@ -7,10 +7,13 @@ const SavedGames = ({ games }) => {
     setExpandedGameId(expandedGameId === gameId ? null : gameId);
   };
 
+  // Ensure that games is always an array
+  const safeGames = games || [];
+
   return (
     <div>
       <h2>Saved Games</h2>
-      {games.map((game) => (
+      {safeGames.map((game) => (
         <div key={game.id}>
           <h3>Game ID: {game.id}</h3>
           <button onClick={() => toggleGameDetails(game.id)}>
@@ -19,9 +22,20 @@ const SavedGames = ({ games }) => {
           {expandedGameId === game.id && (
             <div>
               <h4>Player Stats:</h4>
-              {/* Render player stats here */}
+              <ul>
+                {game.playerStats.map((stat) => (
+                  <li key={stat.id}>
+                    {stat.name}: Goals: {stat.goals}, Assists: {stat.assists}
+                    {/* Display other stats as needed */}
+                  </li>
+                ))}
+              </ul>
               <h4>Team Stats:</h4>
-              {/* Render team stats here */}
+              <div>
+                Total Goals: {game.teamStats.goals}
+                Total Assists: {game.teamStats.assists}
+                {/* Display other team stats as needed */}
+              </div>
             </div>
           )}
         </div>
