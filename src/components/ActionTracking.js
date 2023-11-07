@@ -38,19 +38,19 @@ const ActionArea = ({ type, onDrop }) => {
   );
 };
 
-const ActionTracking = ({ players = [], currentGame, actions, setActions }) => {
-    const [location, setLocation] = useState('');
-  
-    const handleDrop = (type, playerId) => {
-      const newAction = {
-        playerId: playerId,
-        type: type,
-        location: location
-      };
-      // Accumulate actions
-      setActions(prevActions => [...prevActions, newAction]);
-      setLocation('');
+const ActionTracking = ({ players = [], currentGame, handleActionDrop }) => {
+  const [location, setLocation] = useState('');
+
+  const handleDrop = (type, playerId) => {
+    const newAction = {
+      playerId: playerId,
+      type: type,
+      location: location
     };
+    // Pass the new action to the parent component to update the current game state
+    handleActionDrop(newAction);
+    setLocation('');
+  };
 
   const actionTrackingStyle = {
     padding: '20px',
@@ -64,7 +64,7 @@ const ActionTracking = ({ players = [], currentGame, actions, setActions }) => {
         <h2>Action Tracking</h2>
         <div>
           {players.map((player) => (
-            <PlayerThumbnail key={player.id} player={player} />
+            <PlayerThumbnail key={player.id} player={player} handleDrop={handleDrop} />
           ))}
         </div>
         <div>

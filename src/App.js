@@ -12,12 +12,11 @@ import Footer from './components/Footer';
 const App = () => {
   const [players, setPlayers] = useState([]);
   const [currentGame, setCurrentGame] = useState(null);
-  const [actions, setActions] = useState([]);
   const [savedGames, setSavedGames] = useState([]);
 
   const onStartGame = (selectedPlayers) => {
     setCurrentGame({
-      id: Date.now(), // Assign a unique id based on the current timestamp
+      id: Date.now(),
       players: selectedPlayers,
       actions: []
     });
@@ -26,6 +25,13 @@ const App = () => {
   const onEndGame = () => {
     setSavedGames(prevGames => [...prevGames, currentGame]);
     setCurrentGame(null);
+  };
+
+  const handleActionDrop = (action) => {
+    setCurrentGame(prevGame => ({
+      ...prevGame,
+      actions: [...prevGame.actions, action]
+    }));
   };
 
   return (
@@ -40,8 +46,8 @@ const App = () => {
           onStartGame={onStartGame}
           onEndGame={onEndGame}
         />
-        <ActionTracking currentGame={currentGame} players={players} actions={actions} setActions={setActions} />
-        <StatisticsView players={players} actions={actions} />
+        <ActionTracking currentGame={currentGame} players={players} handleActionDrop={handleActionDrop} />
+        <StatisticsView players={players} actions={currentGame?.actions || []} />
         <SavedGames games={savedGames} />
         <Footer />
       </div>

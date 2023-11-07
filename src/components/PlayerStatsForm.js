@@ -40,7 +40,8 @@ const PlayerStatsForm = ({ players, onAddAction }) => {
           <option value="">--Select Action--</option>
           <option value="shotTaken">Shot Taken</option>
           <option value="shotMade">Shot Made</option>
-          <option value="shotMissed">Shot Missed</option>
+          <option value="passCompleted">Pass Completed</option>
+          {/* Add more options as needed for Level 2 */}
         </select>
       </div>
 

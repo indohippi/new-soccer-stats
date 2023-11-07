@@ -4,19 +4,19 @@ const SavedGames = ({ games }) => {
   return (
     <div>
       <h2>Saved Games</h2>
-      {games.map(game => (
-        <div key={game.id}>
+      {games.map((game, gameIndex) => (
+        <div key={game.id || gameIndex}>
           <h3>Game ID: {game.id}</h3>
           <h4>Players:</h4>
           <ul>
-            {game.players.map(player => (
-              <li key={player.id}>{player.name}</li>
+            {game.players.map((player, playerIndex) => (
+              <li key={player.id || playerIndex}>{player.name}</li>
             ))}
           </ul>
           <h4>Actions:</h4>
           <ul>
-            {game.actions.map((action, index) => (
-              <li key={`${action.playerId}-${action.type}-${index}`}>
+            {game.actions.map((action, actionIndex) => (
+              <li key={`${action.playerId}-${action.type}-${actionIndex}`}>
                 Player {action.playerId} {action.type} from {action.location}
               </li>
             ))}
