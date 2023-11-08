@@ -67,7 +67,6 @@ const App = () => {
   };
 
   const onEndGame = () => {
-    console.log('Ending game with current game:', currentGame);
     const newTeamStatistics = calculateTeamStats(currentGame.actions) || { goals: 0, assists: 0 };
 
     const gameToSave = {
@@ -75,13 +74,7 @@ const App = () => {
       teamStats: newTeamStatistics
     };
 
-    console.log('Saving game:', gameToSave);
-    setSavedGames(prevGames => {
-      console.log('Previous saved games:', prevGames);
-      const updatedGames = [...prevGames, gameToSave];
-      console.log('Updated saved games:', updatedGames);
-      return updatedGames;
-    });
+    setSavedGames(prevGames => [...prevGames, gameToSave]);
     setCurrentGame(null);
   };
 
@@ -98,7 +91,8 @@ const App = () => {
           onEndGame={onEndGame}
         />
         <ActionTracking currentGame={currentGame} players={players} handleActionDrop={handleActionDrop} />
-        <StatisticsView players={players} actions={currentGame?.actions || []} />
+        {/* Add a key prop to force re-render */}
+        <StatisticsView key={currentGame?.actions.length || 0} players={players} actions={currentGame?.actions || []} />
         <SavedGames games={savedGames} />
         <Footer />
       </div>

@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
 
 const StatisticsView = ({ players = [], actions = [] }) => {
+  // Debugging: Log when actions or players change
+  useEffect(() => {
+    console.log('Actions or players have changed:', { actions, players });
+  }, [actions, players]);
+
   // Calculate player statistics
   const getPlayerStats = (playerId) => {
     const playerActions = actions.filter(action => action.playerId === playerId);
