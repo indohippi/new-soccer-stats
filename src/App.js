@@ -27,21 +27,30 @@ const App = () => {
       ...prevGame,
       actions: [...prevGame.actions, action]
     }));
+    // Update player statistics immediately after an action is added
+    updatePlayerStats(action.playerId, action.type);
   };
 
-  const getPlayerStats = (playerId, actions) => {
-    const playerActions = actions.filter(action => action.playerId === playerId);
-    const goals = playerActions.filter(action => action.type === 'Goal').length;
-    const assists = playerActions.filter(action => action.type === 'Assist').length;
-    // Add more stats as needed
-    return {
-      goals,
-      assists,
-      // Add more stats as needed
-    };
+  const updatePlayerStats = (playerId, actionType) => {
+    // Find the player in the players array and update their stats
+    setPlayers(prevPlayers => prevPlayers.map(player => {
+      if (player.id === playerId) {
+        // Increment the relevant stat based on the actionType
+        const updatedStats = { ...player.stats };
+        if (actionType === 'Goal') {
+          updatedStats.goals = (updatedStats.goals || 0) + 1;
+        } else if (actionType === 'Assist') {
+          updatedStats.assists = (updatedStats.assists || 0) + 1;
+        }
+        // Add more conditions for other action types if necessary
+        return { ...player, stats: updatedStats };
+      }
+      return player;
+    }));
   };
 
   const calculateTeamStats = (actions) => {
+    // Calculate team stats based on all actions
     const goals = actions.filter(action => action.type === 'Goal').length;
     const assists = actions.filter(action => action.type === 'Assist').length;
     // Add more team stats as needed
@@ -53,16 +62,10 @@ const App = () => {
   };
 
   const onEndGame = () => {
-    const newPlayerStatistics = players.map(player => ({
-      id: player.id,
-      name: player.name,
-      stats: getPlayerStats(player.id, currentGame.actions) || { goals: 0, assists: 0 }
-    }));
     const newTeamStatistics = calculateTeamStats(currentGame.actions) || { goals: 0, assists: 0 };
 
     const gameToSave = {
       ...currentGame,
-      playerStats: newPlayerStatistics,
       teamStats: newTeamStatistics
     };
 

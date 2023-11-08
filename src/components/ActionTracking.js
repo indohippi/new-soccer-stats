@@ -102,16 +102,16 @@ const FieldGrid = ({ onDropAction }) => {
   );
 };
 
-const ActionTracking = ({ players = [], handleActionDrop }) => {
+const ActionTracking = ({ players = [], handleActionDrop, updatePlayerStats }) => {
   const [selectedPlayerId, setSelectedPlayerId] = useState(null);
+  const [selectedAction, setSelectedAction] = useState(null);
 
   const selectPlayer = (playerId) => {
     setSelectedPlayerId(playerId);
   };
 
   const handleSelectAction = (actionType) => {
-    // This function is not used in the current implementation
-    // It's here in case you want to handle action selection differently
+    setSelectedAction(actionType);
   };
 
   const handleDropAction = (actionType, x, y) => {
@@ -122,6 +122,7 @@ const ActionTracking = ({ players = [], handleActionDrop }) => {
         location: { x, y },
       };
       handleActionDrop(newAction);
+      updatePlayerStats(selectedPlayerId, actionType); // Update player stats
       setSelectedPlayerId(null); // Deselect player after action
     }
   };
