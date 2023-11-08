@@ -123,15 +123,8 @@ const ActionTracking = ({ players = [], handleActionDrop }) => {
       };
 
       // Call the handleActionDrop function passed from the parent component
-      // with the new action, only if it's not an 'Assist'
-      if (actionType !== 'Assist') {
-        handleActionDrop(newAction);
-      } else {
-        // If it's an 'Assist', handle it accordingly
-        // This could involve calling a different function or updating the state differently
-        // For example, you might have a handleAssist function that you would call here
-        handleAssist(newAction);
-      }
+      // with the new action
+      handleActionDrop(newAction);
 
       // Reset the selected player and action
       setSelectedPlayerId(null);
@@ -168,11 +161,5 @@ const ActionTracking = ({ players = [], handleActionDrop }) => {
     </DndProvider>
   );
 };
-
-// You would need to implement this function based on how you want to handle assists
-function handleAssist(action) {
-  // Implement assist action logic here
-  console.log('Assist action:', action);
-}
 
 export default ActionTracking;
