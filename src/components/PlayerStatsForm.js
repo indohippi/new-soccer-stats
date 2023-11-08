@@ -37,11 +37,12 @@ const PlayerStatsForm = ({ players, onAddAction }) => {
       <div>
         <label>Action Type:</label>
         <select value={actionType} onChange={(e) => setActionType(e.target.value)}>
-          <option value="">--Select Action--</option>
-          <option value="shotTaken">Shot Taken</option>
-          <option value="shotMade">Shot Made</option>
-          <option value="passCompleted">Pass Completed</option>
-          {/* Add more options as needed for Level 2 */}
+            <option value="">--Select Action--</option>
+            <option value="Goal">Goal</option>
+            <option value="On Target Miss">On Target Miss</option>
+            <option value="Off Target Miss">Off Target Miss</option>
+            <option value="Assist">Assist</option>
+            {/* Add more options as needed for Level 2 */}
         </select>
       </div>
 

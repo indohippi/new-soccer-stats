@@ -69,27 +69,31 @@ const App = () => {
     const teamStats = {
       shotsTaken: 0,
       shotsMade: 0,
-      passesCompleted: 0,
+      shotsMissed: 0,
+      assists: 0,
       // Initialize other stats as needed
     };
-
+  
     actions.forEach(action => {
       switch (action.type) {
-        case 'shotTaken':
+        case 'Goal':
           teamStats.shotsTaken += 1;
-          break;
-        case 'shotMade':
           teamStats.shotsMade += 1;
           break;
-        case 'passCompleted':
-          teamStats.passesCompleted += 1;
+        case 'On Target Miss':
+        case 'Off Target Miss':
+          teamStats.shotsTaken += 1;
+          teamStats.shotsMissed += 1;
+          break;
+        case 'Assist':
+          teamStats.assists += 1;
           break;
         // Add more cases for other action types if necessary
       }
     });
-
+  
     return teamStats;
-  };
+  };  
 
   const onEndGame = () => {
     const newTeamStatistics = calculateTeamStats(currentGame.actions);
