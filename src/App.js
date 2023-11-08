@@ -24,12 +24,10 @@ const App = () => {
 
   const handleActionDrop = (action) => {
     console.log(`${action.type} action: `, action); // Log every action
-    if (action.type !== 'Assist') {
-      setCurrentGame(prevGame => ({
-        ...prevGame,
-        actions: [...prevGame.actions, action]
-      }));
-    }
+    setCurrentGame(prevGame => ({
+      ...prevGame,
+      actions: [...prevGame.actions, action]
+    }));
     // Update player statistics immediately after an action is added
     updatePlayerStats(action.playerId, action.type);
   };

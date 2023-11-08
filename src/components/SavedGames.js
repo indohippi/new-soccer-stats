@@ -25,43 +25,47 @@ const SavedGames = ({ games }) => {
     doc.save(`game_${game.id}.pdf`);
   };
 
-  // Ensure that games is always an array
-  const safeGames = games || [];
+  // Ensure that games is always an array and each game has playerStats and teamStats
+  const safeGames = Array.isArray(games) ? games.filter(game => game.playerStats && game.teamStats) : [];
 
   return (
     <Paper sx={{ p: 2 }}>
       <Typography variant="h4" gutterBottom>
         Saved Games
       </Typography>
-      {safeGames.map((game) => (
-        <Accordion key={game.id} expanded={expandedGameId === game.id} onChange={() => toggleGameDetails(game.id)}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Game ID: {game.id}</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography variant="h6">Player Stats:</Typography>
-            <List>
-              {game.playerStats.map((stat) => (
-                <ListItem key={stat.id}>
-                  <ListItemText primary={`${stat.name}: Goals: ${stat.stats.goals}, Assists: ${stat.stats.assists}`} />
+      {safeGames.length > 0 ? (
+        safeGames.map((game) => (
+          <Accordion key={game.id} expanded={expandedGameId === game.id} onChange={() => toggleGameDetails(game.id)}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>Game ID: {game.id}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography variant="h6">Player Stats:</Typography>
+              <List>
+                {game.playerStats.map((stat) => (
+                  <ListItem key={stat.id}>
+                    <ListItemText primary={`${stat.name}: Goals: ${stat.stats.goals}, Assists: ${stat.stats.assists}`} />
+                  </ListItem>
+                ))}
+              </List>
+              <Typography variant="h6">Team Stats:</Typography>
+              <List>
+                <ListItem>
+                  <ListItemText primary={`Total Goals: ${game.teamStats.goals}`} />
                 </ListItem>
-              ))}
-            </List>
-            <Typography variant="h6">Team Stats:</Typography>
-            <List>
-              <ListItem>
-                <ListItemText primary={`Total Goals: ${game.teamStats.goals}`} />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary={`Total Assists: ${game.teamStats.assists}`} />
-              </ListItem>
-            </List>
-          </AccordionDetails>
-          <Button variant="contained" onClick={() => exportToPDF(game)} sx={{ m: 2 }}>
-            Export to PDF
-          </Button>
-        </Accordion>
-      ))}
+                <ListItem>
+                  <ListItemText primary={`Total Assists: ${game.teamStats.assists}`} />
+                </ListItem>
+              </List>
+            </AccordionDetails>
+            <Button variant="contained" onClick={() => exportToPDF(game)} sx={{ m: 2 }}>
+              Export to PDF
+            </Button>
+          </Accordion>
+        ))
+      ) : (
+        <Typography variant="subtitle1">No saved games available.</Typography>
+      )}
     </Paper>
   );
 };
