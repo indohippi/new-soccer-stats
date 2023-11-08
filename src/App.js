@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Header from './components/Header';
@@ -38,16 +38,18 @@ const App = () => {
       if (player.id === playerId) {
         // Increment the relevant stat based on the actionType
         const updatedStats = { ...player.stats };
-        if (actionType === 'Goal') {
-          updatedStats.goals = (updatedStats.goals || 0) + 1;
-        } else if (actionType === 'Assist') {
-          updatedStats.assists = (updatedStats.assists || 0) + 1;
-        } else if (actionType === 'On Target Miss') {
-          updatedStats.onTargetMisses = (updatedStats.onTargetMisses || 0) + 1;
-        } else if (actionType === 'Off Target Miss') {
-          updatedStats.offTargetMisses = (updatedStats.offTargetMisses || 0) + 1;
+        switch (actionType) {
+          case 'shotTaken':
+            updatedStats.shotsTaken = (updatedStats.shotsTaken || 0) + 1;
+            break;
+          case 'shotMade':
+            updatedStats.shotsMade = (updatedStats.shotsMade || 0) + 1;
+            break;
+          case 'passCompleted':
+            updatedStats.passesCompleted = (updatedStats.passesCompleted || 0) + 1;
+            break;
+          // Add more cases for other action types if necessary
         }
-        // Add more conditions for other action types if necessary
         return { ...player, stats: updatedStats };
       }
       return player;
@@ -56,19 +58,33 @@ const App = () => {
 
   const calculateTeamStats = (actions) => {
     // Calculate team stats based on all actions
-    const goals = actions.filter(action => action.type === 'Goal').length;
-    const assists = actions.filter(action => action.type === 'Assist').length;
-    // Add more team stats as needed
-    return {
-      goals,
-      assists,
-      // Add more team stats as needed
+    const teamStats = {
+      shotsTaken: 0,
+      shotsMade: 0,
+      passesCompleted: 0,
+      // Initialize other stats as needed
     };
+
+    actions.forEach(action => {
+      switch (action.type) {
+        case 'shotTaken':
+          teamStats.shotsTaken += 1;
+          break;
+        case 'shotMade':
+          teamStats.shotsMade += 1;
+          break;
+        case 'passCompleted':
+          teamStats.passesCompleted += 1;
+          break;
+        // Add more cases for other action types if necessary
+      }
+    });
+
+    return teamStats;
   };
 
   const onEndGame = () => {
-    const newTeamStatistics = calculateTeamStats(currentGame.actions) || { goals: 0, assists: 0 };
-
+    const newTeamStatistics = calculateTeamStats(currentGame.actions);
     const gameToSave = {
       ...currentGame,
       teamStats: newTeamStatistics
@@ -77,6 +93,11 @@ const App = () => {
     setSavedGames(prevGames => [...prevGames, gameToSave]);
     setCurrentGame(null);
   };
+
+  // Effect to log state changes (for debugging purposes)
+  useEffect(() => {
+    console.log('Current game state updated:', currentGame);
+  }, [currentGame]);
 
   return (
     <DndProvider backend={HTML5Backend}>
