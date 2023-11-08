@@ -23,10 +23,13 @@ const App = () => {
   };
 
   const handleActionDrop = (action) => {
-    setCurrentGame(prevGame => ({
-      ...prevGame,
-      actions: [...prevGame.actions, action]
-    }));
+    console.log(`${action.type} action: `, action); // Log every action
+    if (action.type !== 'Assist') {
+      setCurrentGame(prevGame => ({
+        ...prevGame,
+        actions: [...prevGame.actions, action]
+      }));
+    }
     // Update player statistics immediately after an action is added
     updatePlayerStats(action.playerId, action.type);
   };
@@ -41,6 +44,10 @@ const App = () => {
           updatedStats.goals = (updatedStats.goals || 0) + 1;
         } else if (actionType === 'Assist') {
           updatedStats.assists = (updatedStats.assists || 0) + 1;
+        } else if (actionType === 'On Target Miss') {
+          updatedStats.onTargetMisses = (updatedStats.onTargetMisses || 0) + 1;
+        } else if (actionType === 'Off Target Miss') {
+          updatedStats.offTargetMisses = (updatedStats.offTargetMisses || 0) + 1;
         }
         // Add more conditions for other action types if necessary
         return { ...player, stats: updatedStats };

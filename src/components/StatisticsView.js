@@ -5,9 +5,9 @@ const StatisticsView = ({ players = [], actions = [] }) => {
   // Calculate player statistics
   const getPlayerStats = (playerId) => {
     const playerActions = actions.filter(action => action.playerId === playerId);
-    const shotsTaken = playerActions.length;
+    const shotsTaken = playerActions.filter(action => action.type !== 'Assist').length;
     const shotsMade = playerActions.filter(action => action.type === 'Goal').length;
-    const shotsMissed = shotsTaken - shotsMade;
+    const shotsMissed = playerActions.filter(action => action.type.includes('Miss')).length;
     const assists = playerActions.filter(action => action.type === 'Assist').length;
 
     return {
@@ -20,9 +20,9 @@ const StatisticsView = ({ players = [], actions = [] }) => {
 
   // Calculate team statistics
   const teamStats = {
-    totalShotsTaken: actions.length,
+    totalShotsTaken: actions.filter(action => action.type !== 'Assist').length,
     totalShotsMade: actions.filter(action => action.type === 'Goal').length,
-    totalShotsMissed: actions.length - actions.filter(action => action.type === 'Goal').length,
+    totalShotsMissed: actions.filter(action => action.type.includes('Miss')).length,
     totalAssists: actions.filter(action => action.type === 'Assist').length
   };
 
