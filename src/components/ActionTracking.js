@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDrag, useDrop, DndProvider } from 'react-dnd';
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Grid, Paper, Typography, Box } from '@mui/material';
 
@@ -102,7 +102,7 @@ const FieldGrid = ({ onDropAction }) => {
   );
 };
 
-const ActionTracking = ({ players = [], handleActionDrop, updatePlayerStats }) => {
+const ActionTracking = ({ players = [], handleActionDrop }) => {
   const [selectedPlayerId, setSelectedPlayerId] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
 
@@ -115,14 +115,13 @@ const ActionTracking = ({ players = [], handleActionDrop, updatePlayerStats }) =
   };
 
   const handleDropAction = (actionType, x, y) => {
-    if (selectedPlayerId) {
+    if (selectedPlayerId && handleActionDrop) {
       const newAction = {
         playerId: selectedPlayerId,
         type: actionType,
         location: { x, y },
       };
       handleActionDrop(newAction);
-      updatePlayerStats(selectedPlayerId, actionType); // Update player stats
       setSelectedPlayerId(null); // Deselect player after action
     }
   };
