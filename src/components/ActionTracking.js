@@ -107,6 +107,7 @@ const ActionTracking = ({ players = [], handleActionDrop }) => {
   const [selectedAction, setSelectedAction] = useState(null);
 
   const selectPlayer = (playerId) => {
+    console.log(`Selecting player with ID: ${playerId}`);
     setSelectedPlayerId(playerId);
   };
 
@@ -122,6 +123,7 @@ const ActionTracking = ({ players = [], handleActionDrop }) => {
         location: { x, y },
       };
 
+      console.log('Dropped action:', newAction);
       // Call the handleActionDrop function passed from the parent component
       // with the new action
       handleActionDrop(newAction);
@@ -129,6 +131,8 @@ const ActionTracking = ({ players = [], handleActionDrop }) => {
       // Reset the selected player and action
       setSelectedPlayerId(null);
       setSelectedAction(null);
+    } else {
+        console.log('No player selected')
     }
   };
 

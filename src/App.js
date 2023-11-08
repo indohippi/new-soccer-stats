@@ -23,7 +23,7 @@ const App = () => {
   };
 
   const handleActionDrop = (action) => {
-    console.log(`${action.type} action: `, action); // Log every action
+    console.log('handleActionDrop called with:', action); // Log every action
     setCurrentGame(prevGame => ({
       ...prevGame,
       actions: [...prevGame.actions, action]
