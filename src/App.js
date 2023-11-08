@@ -33,28 +33,36 @@ const App = () => {
   };
 
   const updatePlayerStats = (playerId, actionType) => {
-    // Find the player in the players array and update their stats
     setPlayers(prevPlayers => prevPlayers.map(player => {
       if (player.id === playerId) {
-        // Increment the relevant stat based on the actionType
         const updatedStats = { ...player.stats };
-        switch (actionType) {
-          case 'shotTaken':
-            updatedStats.shotsTaken = (updatedStats.shotsTaken || 0) + 1;
-            break;
-          case 'shotMade':
-            updatedStats.shotsMade = (updatedStats.shotsMade || 0) + 1;
-            break;
-          case 'passCompleted':
-            updatedStats.passesCompleted = (updatedStats.passesCompleted || 0) + 1;
-            break;
-          // Add more cases for other action types if necessary
+        
+        // Increment "Shots Taken" for any shot-related action
+        if (['Goal', 'On Target Miss', 'Off Target Miss'].includes(actionType)) {
+          updatedStats.shotsTaken = (updatedStats.shotsTaken || 0) + 1;
         }
+        
+        // Increment "Shots Made" for goals
+        if (actionType === 'Goal') {
+          updatedStats.shotsMade = (updatedStats.shotsMade || 0) + 1;
+        }
+        
+        // Increment "Shots Missed" for misses
+        if (['On Target Miss', 'Off Target Miss'].includes(actionType)) {
+          updatedStats.shotsMissed = (updatedStats.shotsMissed || 0) + 1;
+        }
+        
+        // Increment "Assists" for assists
+        if (actionType === 'Assist') {
+          updatedStats.assists = (updatedStats.assists || 0) + 1;
+        }
+        
         return { ...player, stats: updatedStats };
       }
       return player;
     }));
   };
+  
 
   const calculateTeamStats = (actions) => {
     // Calculate team stats based on all actions
