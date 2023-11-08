@@ -5,9 +5,10 @@ import { Grid, Paper, Typography, Box } from '@mui/material';
 
 const ItemType = {
   PLAYER: 'player',
+  ACTION: 'action',
 };
 
-const PlayerThumbnail = ({ player }) => {
+const PlayerThumbnail = ({ player, selectPlayer, isSelected }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemType.PLAYER,
     item: { id: player.id },
@@ -19,11 +20,13 @@ const PlayerThumbnail = ({ player }) => {
   return (
     <Paper
       ref={drag}
+      onClick={() => selectPlayer(player.id)}
       sx={{
         padding: 1,
         textAlign: 'center',
-        backgroundColor: isDragging ? 'lightgrey' : 'white',
-        cursor: 'move',
+        backgroundColor: isSelected ? 'lightblue' : 'white',
+        cursor: 'pointer',
+        opacity: isDragging ? 0.5 : 1,
       }}
     >
       {player.jerseyNumber}
@@ -31,40 +34,96 @@ const PlayerThumbnail = ({ player }) => {
   );
 };
 
-const ActionArea = ({ type, onDrop }) => {
-  const [{ isOver }, drop] = useDrop(() => ({
-    accept: ItemType.PLAYER,
-    drop: (item) => onDrop(type, item.id),
+const ActionButton = ({ actionType, handleSelectAction }) => {
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: ItemType.ACTION,
+    item: { type: actionType },
     collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
+      isDragging: !!monitor.isDragging(),
     }),
   }));
 
   return (
     <Paper
-      ref={drop}
+      ref={drag}
       sx={{
         padding: 1,
         textAlign: 'center',
-        backgroundColor: isOver ? 'lightgray' : 'white',
+        backgroundColor: 'white',
+        cursor: 'move',
+        opacity: isDragging ? 0.5 : 1,
       }}
+      onClick={() => handleSelectAction(actionType)}
     >
-      {type}
+      {actionType}
     </Paper>
   );
 };
 
-const ActionTracking = ({ players = [], handleActionDrop }) => {
-  const [location, setLocation] = useState('');
+const FieldGrid = ({ onDropAction }) => {
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: ItemType.ACTION,
+    drop: (item, monitor) => {
+      const offset = monitor.getSourceClientOffset();
+      if (offset) {
+        onDropAction(item.type, offset.x, offset.y);
+      }
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+  }));
 
-  const handleDrop = (type, playerId) => {
-    const newAction = {
-      playerId: playerId,
-      type: type,
-      location: location,
-    };
-    handleActionDrop(newAction);
-    setLocation('');
+  // Create a 5x5 grid to represent the soccer field
+  const rows = 5;
+  const cols = 5;
+  const fieldGrid = Array.from({ length: rows }, () =>
+    Array.from({ length: cols }, () => 'field-cell')
+  );
+
+  return (
+    <Box ref={drop} sx={{ position: 'relative', width: '100%', height: 300, backgroundColor: isOver ? 'lightgreen' : 'green' }}>
+      {fieldGrid.map((row, rowIndex) =>
+        row.map((cell, colIndex) => (
+          <Box
+            key={`${rowIndex}-${colIndex}`}
+            sx={{
+              position: 'absolute',
+              width: '20%',
+              height: '20%',
+              top: `${rowIndex * 20}%`,
+              left: `${colIndex * 20}%`,
+              border: '1px solid white',
+            }}
+          />
+        ))
+      )}
+    </Box>
+  );
+};
+
+const ActionTracking = ({ players = [], handleActionDrop }) => {
+  const [selectedPlayerId, setSelectedPlayerId] = useState(null);
+
+  const selectPlayer = (playerId) => {
+    setSelectedPlayerId(playerId);
+  };
+
+  const handleSelectAction = (actionType) => {
+    // This function is not used in the current implementation
+    // It's here in case you want to handle action selection differently
+  };
+
+  const handleDropAction = (actionType, x, y) => {
+    if (selectedPlayerId) {
+      const newAction = {
+        playerId: selectedPlayerId,
+        type: actionType,
+        location: { x, y },
+      };
+      handleActionDrop(newAction);
+      setSelectedPlayerId(null); // Deselect player after action
+    }
   };
 
   return (
@@ -76,28 +135,22 @@ const ActionTracking = ({ players = [], handleActionDrop }) => {
         <Grid container spacing={2} justifyContent="center">
           {players.map((player) => (
             <Grid item key={player.id} xs={2}>
-              <PlayerThumbnail player={player} />
+              <PlayerThumbnail
+                player={player}
+                selectPlayer={selectPlayer}
+                isSelected={selectedPlayerId === player.id}
+              />
             </Grid>
           ))}
         </Grid>
         <Grid container spacing={2} justifyContent="center">
-          {/* Define action types and map over them for rendering */}
           {['Goal', 'On Target Miss', 'Off Target Miss', 'Assist'].map((actionType) => (
             <Grid item key={actionType} xs={3}>
-              <ActionArea type={actionType} onDrop={handleDrop} />
+              <ActionButton actionType={actionType} handleSelectAction={handleSelectAction} />
             </Grid>
           ))}
         </Grid>
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="subtitle1">Location:</Typography>
-          <input
-            type="text"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            placeholder="Enter location on the field"
-            sx={{ width: '100%', padding: '10px', margin: '10px 0' }}
-          />
-        </Box>
+        <FieldGrid onDropAction={handleDropAction} />
       </Box>
     </DndProvider>
   );
