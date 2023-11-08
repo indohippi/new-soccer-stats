@@ -116,13 +116,17 @@ const ActionTracking = ({ players = [], handleActionDrop }) => {
 
   const handleDropAction = (actionType, x, y) => {
     if (selectedPlayerId && handleActionDrop) {
+      // Construct the action object with the necessary data
       const newAction = {
         playerId: selectedPlayerId,
         type: actionType,
         location: { x, y },
       };
+      // Call the handleActionDrop function passed from the parent component
       handleActionDrop(newAction);
-      setSelectedPlayerId(null); // Deselect player after action
+      // Reset the selected player and action
+      setSelectedPlayerId(null);
+      setSelectedAction(null);
     }
   };
 
