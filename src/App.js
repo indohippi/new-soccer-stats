@@ -67,6 +67,7 @@ const App = () => {
   };
 
   const onEndGame = () => {
+    console.log('Ending game with current game:', currentGame);
     const newTeamStatistics = calculateTeamStats(currentGame.actions) || { goals: 0, assists: 0 };
 
     const gameToSave = {
@@ -74,7 +75,13 @@ const App = () => {
       teamStats: newTeamStatistics
     };
 
-    setSavedGames(prevGames => [...prevGames, gameToSave]);
+    console.log('Saving game:', gameToSave);
+    setSavedGames(prevGames => {
+      console.log('Previous saved games:', prevGames);
+      const updatedGames = [...prevGames, gameToSave];
+      console.log('Updated saved games:', updatedGames);
+      return updatedGames;
+    });
     setCurrentGame(null);
   };
 
