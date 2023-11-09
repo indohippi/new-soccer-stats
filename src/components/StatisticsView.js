@@ -7,22 +7,6 @@ const StatisticsView = ({ players = [], actions = [] }) => {
     console.log('Actions or players have changed:', { actions, players });
   }, [actions, players]);
 
-  // Calculate player statistics
-  const getPlayerStats = (playerId) => {
-    const playerActions = actions.filter(action => action.playerId === playerId);
-    const shotsTaken = playerActions.filter(action => action.type !== 'Assist').length;
-    const shotsMade = playerActions.filter(action => action.type === 'Goal').length;
-    const shotsMissed = playerActions.filter(action => action.type.includes('Miss')).length;
-    const assists = playerActions.filter(action => action.type === 'Assist').length;
-
-    return {
-      shotsTaken,
-      shotsMade,
-      shotsMissed,
-      assists
-    };
-  };
-
   // Calculate team statistics
   const teamStats = {
     totalShotsTaken: actions.filter(action => action.type !== 'Assist').length,
@@ -49,7 +33,7 @@ const StatisticsView = ({ players = [], actions = [] }) => {
           </TableHead>
           <TableBody>
             {players.map((player) => {
-              const stats = getPlayerStats(player.id);
+              const stats = player.stats || { shotsTaken: 0, shotsMade: 0, shotsMissed: 0, assists: 0 };
               return (
                 <TableRow
                   key={player.id}

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Grid, Paper, Typography, Box } from '@mui/material';
+import { useSelectedPlayer } from './SelectedPlayerContext';
 
 const ItemType = {
   PLAYER: 'player',
@@ -17,10 +18,16 @@ const PlayerThumbnail = ({ player, selectPlayer, isSelected }) => {
     }),
   }));
 
+  // Ensure the click event stops propagation to prevent unwanted behavior
+  const handleSelect = (e) => {
+    e.stopPropagation();
+    selectPlayer(player.id);
+  };
+
   return (
     <Paper
       ref={drag}
-      onClick={() => selectPlayer(player.id)}
+      onClick={handleSelect}
       sx={{
         padding: 1,
         textAlign: 'center',
@@ -103,23 +110,15 @@ const FieldGrid = ({ onDropAction }) => {
 };
 
 const ActionTracking = ({ players = [], handleActionDrop }) => {
-  const [selectedPlayerId, setSelectedPlayerId] = useState(localStorage.getItem('selectedPlayerId') || null);
-
-  useEffect(() => {
-    // This will log every time selectedPlayerId changes
-    console.log(`Selected Player ID: ${selectedPlayerId}`);
-  }, [selectedPlayerId]);
-
-  const selectPlayer = (playerId) => {
-    setSelectedPlayerId(playerId);
-    localStorage.setItem('selectedPlayerId', playerId);
-  };
+  const { selectedPlayerId, selectPlayer } = useSelectedPlayer(); // Use the context hook
 
   const handleSelectAction = (actionType) => {
     // Action selection logic (if any) goes here
+    // This function is currently not used, you might want to implement it or remove it if unnecessary
   };
 
   const handleDropAction = (actionType, x, y) => {
+    console.log(`Handling drop action for player ID: ${selectedPlayerId}`);
     if (selectedPlayerId) {
       const newAction = {
         playerId: selectedPlayerId,
@@ -131,6 +130,11 @@ const ActionTracking = ({ players = [], handleActionDrop }) => {
       console.error('No player selected');
     }
   };
+
+  useEffect(() => {
+    // This will log every time selectedPlayerId changes
+    console.log(`Selected Player ID: ${selectedPlayerId}`);
+  }, [selectedPlayerId]);
 
   return (
     <DndProvider backend={HTML5Backend}>
