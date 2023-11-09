@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Grid, Paper, Typography, Box } from '@mui/material';
@@ -103,16 +103,20 @@ const FieldGrid = ({ onDropAction }) => {
 };
 
 const ActionTracking = ({ players = [], handleActionDrop }) => {
-  const [selectedPlayerId, setSelectedPlayerId] = useState(null);
-  const [selectedAction, setSelectedAction] = useState(null);
+  const [selectedPlayerId, setSelectedPlayerId] = useState(localStorage.getItem('selectedPlayerId') || null);
+
+  useEffect(() => {
+    // This will log every time selectedPlayerId changes
+    console.log(`Selected Player ID: ${selectedPlayerId}`);
+  }, [selectedPlayerId]);
 
   const selectPlayer = (playerId) => {
-    console.log(`Selecting player with ID: ${playerId}`);
     setSelectedPlayerId(playerId);
+    localStorage.setItem('selectedPlayerId', playerId);
   };
 
   const handleSelectAction = (actionType) => {
-    setSelectedAction(actionType);
+    // Action selection logic (if any) goes here
   };
 
   const handleDropAction = (actionType, x, y) => {
@@ -122,17 +126,9 @@ const ActionTracking = ({ players = [], handleActionDrop }) => {
         type: actionType,
         location: { x, y },
       };
-
-      console.log('Dropped action:', newAction);
-      // Call the handleActionDrop function passed from the parent component
-      // with the new action
       handleActionDrop(newAction);
-
-      // Reset the selected player and action
-      setSelectedPlayerId(null);
-      setSelectedAction(null);
     } else {
-        console.log('No player selected')
+      console.error('No player selected');
     }
   };
 
@@ -148,17 +144,26 @@ const ActionTracking = ({ players = [], handleActionDrop }) => {
               <PlayerThumbnail
                 player={player}
                 selectPlayer={selectPlayer}
-                isSelected={selectedPlayerId === player.id}
+                isSelected={player.id === selectedPlayerId}
               />
             </Grid>
           ))}
         </Grid>
-        <Grid container spacing={2} justifyContent="center">
-          {['Goal', 'On Target Miss', 'Off Target Miss', 'Assist'].map((actionType) => (
-            <Grid item key={actionType} xs={3}>
-              <ActionButton actionType={actionType} handleSelectAction={handleSelectAction} />
-            </Grid>
-          ))}
+        <Grid container spacing={2} justifyContent="center" sx={{ mt: 2 }}>
+          {/* Define your action types here */}
+          <Grid item xs={2}>
+            <ActionButton actionType="Goal" handleSelectAction={handleSelectAction} />
+          </Grid>
+          <Grid item xs={2}>
+            <ActionButton actionType="On Target Miss" handleSelectAction={handleSelectAction} />
+          </Grid>
+          <Grid item xs={2}>
+            <ActionButton actionType="Off Target Miss" handleSelectAction={handleSelectAction} />
+          </Grid>
+          <Grid item xs={2}>
+            <ActionButton actionType="Assist" handleSelectAction={handleSelectAction} />
+          </Grid>
+          {/* ... other action buttons */}
         </Grid>
         <FieldGrid onDropAction={handleDropAction} />
       </Box>
